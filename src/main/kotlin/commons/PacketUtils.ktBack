@@ -1,0 +1,41 @@
+import commons.Packet.Companion.PacketKeys
+import com.google.gson.Gson
+
+class PacketUtils {
+    interface PacketCallback {
+        fun onInit()
+        fun onReceivePacket(packet: commons.Packet)
+        fun onException(e: Exception)
+    }
+    companion object {
+        fun deserialize(receivedPacket: commons.Packet): commons.Packet {
+            Gson().let { gson ->
+                PacketKeys.Sender.let {
+                    if (receivedPacket.args.containsKey(it))
+                        receivedPacket.args[it] = gson.fromJson(
+                            gson.toJsonTree(receivedPacket.args[it]),
+                            Player::class.java
+                        )
+                }
+
+                PacketKeys.Card.let {
+                    if (receivedPacket.args.containsKey(it))
+                        receivedPacket.args[it] = gson.fromJson(
+                            gson.toJsonTree(receivedPacket.args[it]),
+                            Card::class.java
+                        )
+                }
+
+                PacketKeys.commons.GameFrame.let {
+                    if (receivedPacket.args.containsKey(it))
+                        gson.fromJson(
+                            gson.toJsonTree(receivedPacket.args[it]),
+                            commons.GameFrame::class.java
+                        )
+                }
+            }
+
+            return receivedPacket
+        }
+    }
+}

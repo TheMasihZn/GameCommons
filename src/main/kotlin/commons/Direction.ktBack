@@ -1,0 +1,11 @@
+package commons
+
+enum class Direction {
+    Clockwise,
+    Counterclockwise;
+
+    fun reverse() {
+        if (this == Clockwise) Counterclockwise
+        else Clockwise
+    }
+}

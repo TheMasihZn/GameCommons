@@ -1,0 +1,42 @@
+class Card(val suit: Suit, val value: Value) {
+
+    constructor(): this(Suit.Null,Value.T)
+    constructor(value: Value): this(Suit.Null,value)
+    constructor(suit: Suit): this(suit,Value.T)
+
+    infix fun tops(c: Card): Boolean {
+//        suit only -> compare value
+        if (suit == Suit.Null || c.suit == Suit.Null) return value == c.value
+//        value only -> compare suit
+        if (value == Value.T || c.value == Value.T) return suit == c.suit
+//        normal
+        return suit == c.suit || value == c.value
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Card) return false
+        return suit == other.suit && value == other.value
+    }
+
+    override fun toString() = "$value of $suit"
+
+    override fun hashCode(): Int {
+        return (suit.hashCode() * 255) + value.hashCode()
+    }
+
+    enum class Suit {
+        Diamonds, Hearts, Spades, Clubs, Null;
+
+        companion object {
+            fun legal() = Suit.values().toSet() - Null
+        }
+    }
+
+    enum class Value {
+        A, II, III, IV, V, VI, VII, VIII, IX, X, J, Q, K, T;
+
+        companion object {
+            fun legal() = Value.values().toSet() - T
+        }
+    }
+}

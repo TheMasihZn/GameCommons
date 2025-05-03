@@ -1,0 +1,11 @@
+data class Player(
+    var id: Long,
+    var name: String,
+    var icon: Int,
+    val hand: MutableList<Card> = mutableListOf(),
+    var timeout: Long = 60 * 1000,
+) {
+    override fun toString() = "$name : ${hand.size}"
+    override fun hashCode() = id.hashCode()
+    override fun equals(other: Any?) = (other is Player) && (other.id == this.id)
+}

@@ -1,0 +1,12 @@
+package commons
+
+import commons.Direction
+import Player
+import java.io.Serializable
+
+data class GameFrame(val floor: Card,
+                     val players: List<Player>,
+                     val turnId: Long,
+                     val direction: commons.Direction,
+                     val timestamp: Long = System.currentTimeMillis()
+): Serializable
