@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameFrame implements Serializable {
-    private Card floor;
-    private List<Player> players;
-    private long turnId;
-    private Direction direction;
+    protected Card floor;
+    protected List<Player> players;
+    protected long turnId;
+    protected Direction direction;
     private long timestamp;
 
     public GameFrame(Card floor, List<Player> players, long turnId, Direction direction) {
@@ -44,14 +44,7 @@ public class GameFrame implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GameFrame)) return false;
-        GameFrame that = (GameFrame) o;
-        return turnId == that.turnId &&
-               timestamp == that.timestamp &&
-               Objects.equals(floor, that.floor) &&
-               Objects.equals(players, that.players) &&
-               direction == that.direction;
+        return o.hashCode() == this.hashCode();
     }
 
     @Override

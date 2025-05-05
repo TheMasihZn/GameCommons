@@ -8,14 +8,14 @@ public class Player {
     private String name;
     private int icon;
     private List<Card> hand;
-    private long timeout;
+    public long timeout;
 
     public Player(long id, String name, int icon) {
-        this(id, name, icon, new ArrayList<>(), 60_000L);
+        this(id, name, icon, new ArrayList<>(), 0);
     }
 
     public Player(long id, String name, int icon, List<Card> hand) {
-        this(id, name, icon, hand, 60_000L);
+        this(id, name, icon, hand, 0);
     }
 
     public Player(long id, String name, int icon, List<Card> hand, long timeout) {
@@ -62,10 +62,6 @@ public class Player {
         return timeout;
     }
 
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
-    }
-
     @Override
     public String toString() {
         return name + " : " + hand.size();
@@ -78,9 +74,6 @@ public class Player {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Player)) return false;
-        Player other = (Player) obj;
-        return id == other.id;
+        return obj.hashCode() == this.hashCode();
     }
 }

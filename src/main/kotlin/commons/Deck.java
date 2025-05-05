@@ -10,7 +10,7 @@ public class Deck {
     private List<Card> getCards() {
         if (cards.isEmpty()) {
             for (Card.Suit suit : Card.Suit.legal()) {
-                for (Card.Value value : Card.Value.legal()) {
+                for (Card.Values value : Card.Values.legal()) {
                     cards.add(new Card(suit, value));
                 }
             }

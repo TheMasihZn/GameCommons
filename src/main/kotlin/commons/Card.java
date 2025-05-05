@@ -3,31 +3,39 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Card {
-    public final Suit suit;
-    public final Value value;
+    private final Suit suit;
+    private final Values value;
 
-    public Card(Suit suit, Value value) {
+    public Card(Suit suit, Values value) {
         this.suit = suit;
         this.value = value;
     }
 
-    public Card() {
-        this(Suit.Null, Value.T);
+    public Suit getSuit() {
+        return suit;
+    }
+    public Values getValue() {
+        return value;
     }
 
-    public Card(Value value) {
+
+    public Card() {
+        this(Suit.Null, Values.T);
+    }
+
+    public Card(Values value) {
         this(Suit.Null, value);
     }
 
     public Card(Suit suit) {
-        this(suit, Value.T);
+        this(suit, Values.T);
     }
 
     public boolean tops(Card c) {
         if (this.suit == Suit.Null || c.suit == Suit.Null) {
             return this.value == c.value;
         }
-        if (this.value == Value.T || c.value == Value.T) {
+        if (this.value == Values.T || c.value == Values.T) {
             return this.suit == c.suit;
         }
         return this.suit == c.suit || this.value == c.value;
@@ -35,15 +43,12 @@ public class Card {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Card)) return false;
-        Card other = (Card) obj;
-        return suit == other.suit && value == other.value;
+        return this.hashCode() == obj.hashCode();
     }
 
     @Override
     public int hashCode() {
-        return suit.hashCode() * 255 + value.hashCode();
+        return Objects.hash(suit, value);
     }
 
     @Override
@@ -59,10 +64,10 @@ public class Card {
         }
     }
 
-    public enum Value {
+    public enum Values {
         A, II, III, IV, V, VI, VII, VIII, IX, X, J, Q, K, T;
 
-        public static Set<Value> legal() {
+        public static Set<Values> legal() {
             return EnumSet.complementOf(EnumSet.of(T));
         }
     }
