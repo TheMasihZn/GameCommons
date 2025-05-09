@@ -1,6 +1,11 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Game extends GameFrame {
+
+    private boolean skipPending = false;
+    private int pendingDrawCount = 0;
 
     private Deck deck = new Deck();
 
@@ -21,6 +26,9 @@ public class Game extends GameFrame {
     }
 
     public boolean isValidMove(Card playedCard) {
+        if(floor.getValue() == Card.Values.VII && pendingDrawCount > 0) { // 7 penalty bug fixed
+            return playedCard.getValue() == Card.Values.VII;
+        }
         return playedCard.tops(floor) || playedCard.getValue() == Card.Values.J;
     }
 
@@ -39,19 +47,80 @@ public class Game extends GameFrame {
         if (card.getValue() == Card.Values.X) {
             newDirection = newDirection.reverse();
             nextTurn = nextTurnId(turnId, newDirection);
+            skipPending = false;
         } else if (card.getValue() == Card.Values.A) {
-            long skipped = nextTurnId(turnId, newDirection);
-            nextTurn = nextTurnId(skipped, newDirection);
+            nextTurn = nextTurnId(nextTurn, newDirection);
+            skipPending = true;
+        } else if (card.getValue() == Card.Values.VII) {
+            pendingDrawCount += 2;
 
+        } else if (card.getValue() == Card.Values.J) {
+//"implement choose Suit command"
+            nextTurn = nextTurnId(nextTurn, newDirection);
+//card 2 properties added
+        } else if (card.getValue() == Card.Values.II) {
+            Random random = new Random();
+            List<Card> hand = player.getHand();
+            if(!hand.isEmpty()){
+                Card randomCard = hand.remove(random.nextInt(hand.size()));
+                Player target = chooseTargetPlayer(player);
+                takeRandom(target, randomCard);
+            }
+
+        } else if (card.getValue() == Card.Values.VIII) {
+            nextTurn = turnId;
+
+        } else {
+            if (skipPending) {
+//                skip another time
+                nextTurn = nextTurnId(nextTurn, newDirection);
+            }
+            skipPending = false;
         }
-        updateTurn();
+        floor = card; //  update floor fixed
+        turnId = nextTurn;
     }
+
+    // draw card logic fixed
 
     public void drawCard(Player player) {
-        player.getHand().add(deck.take());
+
+        long nextTurn = nextTurnId();
+
+        if (pendingDrawCount > 0) {
+            for (int i = 0; i < pendingDrawCount; i++) {
+                player.getHand().add(deck.take());
+            }
+            pendingDrawCount = 0;
+        }else{
+            player.getHand().add(deck.take());
+        }
+        turnId = nextTurn;
     }
-    public void updateTurn(){
-        turnId = nextTurnId();
+//method attemptPlay added to handle turn update correctly
+
+    public boolean attemptPlay(Player player, Card card) {
+        if(!player.equals(getCurrentPlayer()))return false;
+
+        if(isValidMove(card)){
+            playCard(player, card);
+            return true;
+        }
+        return false;
+    }
+    //method takeRandom for getting a card from other players implemented
+    public void takeRandom(Player player,Card card){
+        player.getHand().add(card);
+    }
+//target player method for card 2 reaction implemented
+    public Player chooseTargetPlayer(Player exclude) {
+        List<Player> others = new ArrayList<>(players);
+        others.remove(exclude);
+
+        if(others.isEmpty()) throw new IllegalStateException("No other players");
+
+        Random random = new Random();
+        return others.get(random.nextInt(others.size()));
     }
 
     private long nextTurnId() {
@@ -87,7 +156,7 @@ public class Game extends GameFrame {
     }
 
     public GameFrame getGameFrame() {
-        return  new GameFrame(
+        return new GameFrame(
                 floor,
                 players,
                 turnId,
