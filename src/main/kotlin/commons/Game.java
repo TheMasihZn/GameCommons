@@ -54,7 +54,7 @@ public class Game extends GameFrame {
             nextTurn = nextTurnId(nextTurn, newDirection);
             skipPending = true;
         } else if (card.getValue() == Card.Values.VII) {
-            callback.onPenaltychanged(getGameFrame());
+            callback.onPenaltyChanged(getGameFrame());
             pendingDrawCount += 2;
 
         } else if (card.getValue() == Card.Values.J) {
@@ -115,7 +115,7 @@ public class Game extends GameFrame {
     public void tranferCard(Player from, Player to, Card card) {
         from.getHand().remove(card);
         to.getHand().add(card);
-        callback.onCardTransfered(from, to, card, getGameFrame());
+        callback.onCardTransferred(from, to, card, getGameFrame());
     }
 
     //target player method for card 2 reaction implemented
@@ -189,9 +189,9 @@ interface CallBack {
 
     void onStart(GameFrame frame);
 
-    void onCardTransfered(Player from, Player to, Card card, GameFrame frame);
+    void onCardTransferred(Player from, Player to, Card card, GameFrame frame);
 
-    void onPenaltychanged(GameFrame frame);
+    void onPenaltyChanged(GameFrame frame);
 
     void onRequestGift(Player from, Player to, Card card, GameFrame frame);
 
