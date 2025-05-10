@@ -5,9 +5,9 @@ public class Game extends GameFrame {
 
     private Deck deck = new Deck();
 
-    private GameCallback callback;
+    private CallBack callback;
 
-    public Game(GameFrame initialFrame, GameCallback Callback) {
+    public Game(GameFrame initialFrame, CallBack Callback) {
         super(
                 initialFrame.getFloor(),
                 initialFrame.getPlayers(),
@@ -172,7 +172,7 @@ public class Game extends GameFrame {
 
 }
 
-interface GameCallback {
+interface CallBack {
     void onRequestSuit(Player player, GameFrame frame);
 
     void onGameFinished(GameFrame frame);
