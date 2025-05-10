@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Game extends GameFrame {
 
@@ -129,7 +130,7 @@ public class Game extends GameFrame {
 
 
     private long nextTurnId(long fromId, Direction dir) {
-        int i = players.stream().map(Player::getId).toList().indexOf(fromId);
+        int i = players.stream().map(Player::getId).collect(Collectors.toList()).indexOf(fromId);
         i = (dir == Direction.Clockwise) ? i + 1 : i - 1;
         if (i < 0) {
             i = players.size() - 1;
@@ -161,6 +162,11 @@ public class Game extends GameFrame {
                 players,
                 turnId,
                 direction);
+    }
+
+
+    interface Ga{
+        void g();
     }
 
 
