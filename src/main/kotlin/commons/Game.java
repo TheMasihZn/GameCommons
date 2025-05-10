@@ -1,7 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class Game extends GameFrame {
 
     private boolean skipPending = false;
@@ -9,13 +5,17 @@ public class Game extends GameFrame {
 
     private Deck deck = new Deck();
 
-    public Game(GameFrame initialFrame) {
+    private GameCallback callback;
+
+    public Game(GameFrame initialFrame, GameCallback Callback) {
         super(
                 initialFrame.getFloor(),
                 initialFrame.getPlayers(),
                 initialFrame.getTurnId(),
                 initialFrame.getDirection()
         );
+        this.callback = Callback;
+        callback.onStart(getGameFrame());
     }
 
     public Player getCurrentPlayer() {
@@ -26,49 +26,47 @@ public class Game extends GameFrame {
     }
 
     public boolean isValidMove(Card playedCard) {
-        if(floor.getValue() == Card.Values.VII && pendingDrawCount > 0) { // 7 penalty bug fixed
+        if (floor.getValue() == Card.Values.VII && pendingDrawCount > 0) { // 7 penalty bug fixed
             return playedCard.getValue() == Card.Values.VII;
         }
         return playedCard.tops(floor) || playedCard.getValue() == Card.Values.J;
     }
 
-    public void playCard(Player player, Card card) {
-        if (!player.equals(getCurrentPlayer())) {
-            throw new IllegalStateException("It's not your turn");
+    // transform to switch case
+    public void playCard(Player currentPlayer, Player to, Card card) {
+        if (!currentPlayer.equals(getCurrentPlayer())) {
+            callback.onOutOfTurnPlayed(currentPlayer);
         }
         if (!isValidMove(card)) {
-            throw new IllegalStateException("Invalid move" + card);
+            callback.onInvalidMoveMade(currentPlayer);
         }
-        player.getHand().remove(card);
+        callback.onCardPlayed(currentPlayer, card, getGameFrame());
+        currentPlayer.getHand().remove(card);
 
         Direction newDirection = direction;
         long nextTurn = nextTurnId();
 
         if (card.getValue() == Card.Values.X) {
             newDirection = newDirection.reverse();
+            callback.onReverseDirection(getGameFrame());
             nextTurn = nextTurnId(turnId, newDirection);
-            skipPending = false;
         } else if (card.getValue() == Card.Values.A) {
             nextTurn = nextTurnId(nextTurn, newDirection);
             skipPending = true;
         } else if (card.getValue() == Card.Values.VII) {
+            callback.onPenaltychanged(getGameFrame());
             pendingDrawCount += 2;
 
         } else if (card.getValue() == Card.Values.J) {
-//"implement choose Suit command"
+            callback.onRequestSuit(currentPlayer, getGameFrame());
             nextTurn = nextTurnId(nextTurn, newDirection);
 //card 2 properties added
         } else if (card.getValue() == Card.Values.II) {
-            Random random = new Random();
-            List<Card> hand = player.getHand();
-            if(!hand.isEmpty()){
-                Card randomCard = hand.remove(random.nextInt(hand.size()));
-                Player target = chooseTargetPlayer(player);
-                takeRandom(target, randomCard);
-            }
+            callback.onRequestGift(currentPlayer, to, card, getGameFrame());
 
         } else if (card.getValue() == Card.Values.VIII) {
             nextTurn = turnId;
+            callback.onNextTurn(currentPlayer, currentPlayer, getGameFrame());
 
         } else {
             if (skipPending) {
@@ -79,49 +77,57 @@ public class Game extends GameFrame {
         }
         floor = card; //  update floor fixed
         turnId = nextTurn;
+        callback.onNextTurn(currentPlayer, to, getGameFrame());
+        if (isGameOver()) callback.onGameFinished(getGameFrame());
+        getGameFrame();
     }
 
     // draw card logic fixed
 
-    public void drawCard(Player player) {
-
+    public void drawCard(Player player, Card card) {
         long nextTurn = nextTurnId();
 
         if (pendingDrawCount > 0) {
             for (int i = 0; i < pendingDrawCount; i++) {
+                callback.onCardDrawn(player, card, getGameFrame());
                 player.getHand().add(deck.take());
             }
             pendingDrawCount = 0;
-        }else{
+        } else {
+            callback.onCardDrawn(player, card, getGameFrame());
             player.getHand().add(deck.take());
         }
         turnId = nextTurn;
     }
 //method attemptPlay added to handle turn update correctly
 
-    public boolean attemptPlay(Player player, Card card) {
-        if(!player.equals(getCurrentPlayer()))return false;
+    public boolean attemptPlay(Player currentplayer, Player to, Card card) {
+        if (!currentplayer.equals(getCurrentPlayer())) return false;
 
-        if(isValidMove(card)){
-            playCard(player, card);
+        if (isValidMove(card)) {
+            playCard(currentplayer, to, card);
             return true;
         }
         return false;
     }
+
     //method takeRandom for getting a card from other players implemented
-    public void takeRandom(Player player,Card card){
-        player.getHand().add(card);
+    public void tranferCard(Player from, Player to, Card card) {
+        from.getHand().remove(card);
+        to.getHand().add(card);
+        callback.onCardTransfered(from, to, card, getGameFrame());
     }
-//target player method for card 2 reaction implemented
-    public Player chooseTargetPlayer(Player exclude) {
-        List<Player> others = new ArrayList<>(players);
-        others.remove(exclude);
 
-        if(others.isEmpty()) throw new IllegalStateException("No other players");
-
-        Random random = new Random();
-        return others.get(random.nextInt(others.size()));
-    }
+    //target player method for card 2 reaction implemented
+//    public Player chooseTargetPlayer(Player exclude) {
+//        List<Player> others = new ArrayList<>(players);
+//        others.remove(exclude);
+//
+//        if (others.isEmpty()) throw new IllegalStateException("No other players");
+//
+//        Random random = new Random();
+//        return others.get(random.nextInt(others.size()));
+//    }
 
     private long nextTurnId() {
         return nextTurnId(turnId, direction);
@@ -155,7 +161,7 @@ public class Game extends GameFrame {
                 .orElse(null);
     }
 
-    public GameFrame getGameFrame() {
+    private GameFrame getGameFrame() {
         return new GameFrame(
                 floor,
                 players,
@@ -163,5 +169,32 @@ public class Game extends GameFrame {
                 direction);
     }
 
+
+}
+
+interface GameCallback {
+    void onRequestSuit(Player player, GameFrame frame);
+
+    void onGameFinished(GameFrame frame);
+
+    void onNextTurn(Player oldPlayer, Player newPlayer, GameFrame frame);
+
+    void onCardPlayed(Player player, Card card, GameFrame frame);
+
+    void onCardDrawn(Player player, Card card, GameFrame frame);
+
+    void onInvalidMoveMade(Player player);
+
+    void onOutOfTurnPlayed(Player player);
+
+    void onStart(GameFrame frame);
+
+    void onCardTransfered(Player from, Player to, Card card, GameFrame frame);
+
+    void onPenaltychanged(GameFrame frame);
+
+    void onRequestGift(Player from, Player to, Card card, GameFrame frame);
+
+    void onReverseDirection(GameFrame frame);
 
 }
