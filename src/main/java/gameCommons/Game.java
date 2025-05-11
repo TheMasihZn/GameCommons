@@ -1,20 +1,24 @@
+package gameCommons;
+
+import java.util.stream.Collectors;
+
 public class Game extends GameFrame {
 
     private boolean skipPending = false;
     private int pendingDrawCount = 0;
 
-    private Deck deck = new Deck();
+    private final Deck deck = new Deck();
 
-    private CallBack callback;
+    private final GameCallBack callback;
 
-    public Game(GameFrame initialFrame, CallBack Callback) {
+    public Game(GameFrame initialFrame, GameCallBack callback) {
         super(
                 initialFrame.getFloor(),
                 initialFrame.getPlayers(),
                 initialFrame.getTurnId(),
                 initialFrame.getDirection()
         );
-        this.callback = Callback;
+        this.callback = callback;
         callback.onStart(getGameFrame());
     }
 
@@ -112,15 +116,15 @@ public class Game extends GameFrame {
     }
 
     //method takeRandom for getting a card from other players implemented
-    public void tranferCard(Player from, Player to, Card card) {
+    public void transferCard(Player from, Player to, Card card) {
         from.getHand().remove(card);
         to.getHand().add(card);
         callback.onCardTransferred(from, to, card, getGameFrame());
     }
 
     //target player method for card 2 reaction implemented
-//    public Player chooseTargetPlayer(Player exclude) {
-//        List<Player> others = new ArrayList<>(players);
+//    public gameCommons.Player chooseTargetPlayer(gameCommons.Player exclude) {
+//        List<gameCommons.Player> others = new ArrayList<>(players);
 //        others.remove(exclude);
 //
 //        if (others.isEmpty()) throw new IllegalStateException("No other players");
@@ -135,7 +139,7 @@ public class Game extends GameFrame {
 
 
     private long nextTurnId(long fromId, Direction dir) {
-        int i = players.stream().map(Player::getId).toList().indexOf(fromId);
+        int i = players.stream().map(Player::getId).collect(Collectors.toList()).indexOf(fromId);
         i = (dir == Direction.Clockwise) ? i + 1 : i - 1;
         if (i < 0) {
             i = players.size() - 1;
@@ -169,32 +173,31 @@ public class Game extends GameFrame {
                 direction);
     }
 
+    public interface GameCallBack {
+        void onStart(GameFrame frame);
 
+        void onGameFinished(GameFrame frame);
+
+        void onNextTurn(Player oldPlayer, Player newPlayer, GameFrame frame);
+
+        void onCardPlayed(Player player, Card card, GameFrame frame);
+
+        void onCardDrawn(Player player, Card card, GameFrame frame);
+
+        void onRequestSuit(Player player, GameFrame frame);
+
+        void onInvalidMoveMade(Player player);
+
+        void onOutOfTurnPlayed(Player player);
+
+        void onCardTransferred(Player from, Player to, Card card, GameFrame frame);
+
+        void onPenaltyChanged(GameFrame frame);
+
+        void onRequestGift(Player from, Player to, Card card, GameFrame frame);
+
+        void onReverseDirection(GameFrame frame);
+
+    }
 }
 
-interface CallBack {
-    void onRequestSuit(Player player, GameFrame frame);
-
-    void onGameFinished(GameFrame frame);
-
-    void onNextTurn(Player oldPlayer, Player newPlayer, GameFrame frame);
-
-    void onCardPlayed(Player player, Card card, GameFrame frame);
-
-    void onCardDrawn(Player player, Card card, GameFrame frame);
-
-    void onInvalidMoveMade(Player player);
-
-    void onOutOfTurnPlayed(Player player);
-
-    void onStart(GameFrame frame);
-
-    void onCardTransferred(Player from, Player to, Card card, GameFrame frame);
-
-    void onPenaltyChanged(GameFrame frame);
-
-    void onRequestGift(Player from, Player to, Card card, GameFrame frame);
-
-    void onReverseDirection(GameFrame frame);
-
-}
