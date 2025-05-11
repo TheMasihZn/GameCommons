@@ -1,7 +1,11 @@
-package gameCommons;
+package serverCommons;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import gameCommons.Card;
+import gameCommons.GameFrame;
+import gameCommons.Player;
+
 import java.util.Map;
 
 public class PacketUtils {

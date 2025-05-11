@@ -1,4 +1,4 @@
-package gameCommons;
+package serverCommons;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -6,10 +6,6 @@ import java.util.Map;
 public class Packet {
     private SystemCommand command;
     private final Map<PacketKeys, Object> args = new EnumMap<>(PacketKeys.class);
-
-    public Packet() {
-        this(SystemCommand.Ping);
-    }
 
     public Packet(SystemCommand command) {
         this.command = command;
