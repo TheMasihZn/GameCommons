@@ -1,3 +1,4 @@
+package gameCommons;
 
 public enum Direction {
     Clockwise,

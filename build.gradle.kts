@@ -4,7 +4,8 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src/main/kotlin/commons")
+        java.srcDirs("src/main/java/")
+        java.srcDirs("src/main/kotlin/")
     }
 }
 tasks.register<Jar>("packageJar") {
@@ -23,17 +24,19 @@ repositories {
 }
 
 
-val ktor_version = "2.2.4"
-val logback_version = "1.2.11"
+val ktorVersion = "2.2.4"
+val logbackVersion = "1.2.11"
 dependencies {
     testImplementation(kotlin("test"))
 
-    implementation("io.ktor:ktor-serialization-gson:$ktor_version")
-//    implementation("io.ktor.plugin:plugin:$ktor_version")
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
+    implementation("io.ktor:ktor-server-websockets:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
+    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
 }
 
 tasks.test {

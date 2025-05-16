@@ -1,9 +1,11 @@
+package gameCommons;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 public class GameFrame implements Serializable {
+    public String name;
     protected Card floor;
     protected List<Player> players;
     protected long turnId;
@@ -54,7 +56,7 @@ public class GameFrame implements Serializable {
 
     @Override
     public String toString() {
-        return "GameFrame{" +
+        return "gameCommons.GameFrame{" +
                "floor=" + floor +
                ", players=" + players +
                ", turnId=" + turnId +
