@@ -1,3 +1,7 @@
+package gameCommons;
+
+import gameCommons.*;
+
 public abstract class GameBase extends GameFrame {
     protected Deck deck = new Deck();
     protected GameCallback callback;

@@ -1,3 +1,5 @@
+package gameCommons;
+
 public interface GameCallback {
     void onRequestSuit(Player player, GameFrame frame);
     void onGameFinished(GameFrame frame);
