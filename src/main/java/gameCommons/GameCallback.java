@@ -13,4 +13,5 @@ public interface GameCallback {
     void onPenaltyChanged(GameFrame frame);
     void onRequestGift(Player from, Player to, Card card, GameFrame frame);
     void onReverseDirection(GameFrame frame);
+    void onMoveHandByDirection(GameFrame frame, Player from, Player to, Card card);
     }

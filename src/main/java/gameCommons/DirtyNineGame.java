@@ -1,9 +1,14 @@
 package gameCommons;
 
-public class DirtySevenGame extends GameBase {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public DirtySevenGame(GameFrame frame, GameConfig config, GameCallback callback) {
-        super(frame, config, callback); // todo what the fuck is this
+public class DirtyNineGame extends GameBase {
+
+    public DirtyNineGame(GameFrame frame, GameCallback callback, GameConfig config) {
+        super(frame, config, callback);
         initializeDeck();
     }
 
@@ -44,7 +49,7 @@ public class DirtySevenGame extends GameBase {
             }
             case VII -> {
                 callback.onPenaltyChanged(getGameFrame());
-                pendingDrawCount += 2;
+                pendingDrawCount += 4;
             }
             case J -> {
                 callback.onRequestSuit(currentPlayer, getGameFrame());
@@ -54,6 +59,24 @@ public class DirtySevenGame extends GameBase {
             case VIII -> {
                 nextTurn = turnId;
                 callback.onNextTurn(currentPlayer, currentPlayer, getGameFrame());
+            }
+            case IX -> {
+                Map<Long, List<Card>> handCopies = new HashMap<>();
+                for (Player p : players) {
+                    handCopies.put(p.getId(), new ArrayList<>(p.getHand()));
+                }
+                for (Player p : players) {
+                    long nextId = nextTurnId(p.getId(), direction);
+                    Player nextPlayer = getPlayerById(nextId);
+
+                    List<Card> cardsToGive = handCopies.get(p.getId());
+                    p.getHand().clear();
+                    nextPlayer.getHand().addAll(cardsToGive);
+
+                    for ( Card c : cardsToGive) {
+                        callback.onCardTransferred(p, nextPlayer, card, getGameFrame());
+                    }
+                }
             }
             default -> {
                 if (skipNext) {
@@ -86,4 +109,5 @@ public class DirtySevenGame extends GameBase {
         }
         turnId = nextTurn;
     }
+
 }

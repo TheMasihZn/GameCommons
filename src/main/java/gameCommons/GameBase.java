@@ -2,16 +2,28 @@ package gameCommons;
 
 import gameCommons.*;
 
+import java.util.List;
+
 public abstract class GameBase extends GameFrame {
-    protected Deck deck = new Deck();
+    protected final GameConfig config;
+    protected Deck deck;
     protected GameCallback callback;
     protected int pendingDrawCount = 0;
     protected boolean skipNext = false;
 
-    public GameBase(GameFrame frame, GameCallback callback) {
+    public GameBase(GameFrame frame, GameConfig config, GameCallback callback) {
         super(frame.getFloor(), frame.getPlayers(), frame.getTurnId(), frame.getDirection());
         this.callback = callback;
+        this.config = config;
         callback.onStart(getGameFrame());
+    }
+
+    protected void initializeDeck() {
+        this.deck = new Deck(config.getDeckCount());
+        for (Player player : players) {
+            List<Card> hand = deck.take(config.getCardsPerPlayer());
+            player.setHand(hand);
+        }
     }
 
     public abstract boolean isValidMove(Card card);
@@ -52,6 +64,13 @@ public abstract class GameBase extends GameFrame {
 
     public Player getLooser() {
         return players.stream().filter(p -> !p.getHand().isEmpty()).findFirst().orElse(null);
+    }
+
+    protected Player getPlayerById(long id) {
+        return players.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No player with ID: " + id));
     }
 
     protected long nextTurnId() {
