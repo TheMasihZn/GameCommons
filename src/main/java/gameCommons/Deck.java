@@ -8,6 +8,16 @@ public class Deck {
     private final List<Card> cards = new ArrayList<>();
     private final Random random = new Random();
 
+    public Deck(int numberOfDecks) {
+        for (int d = 0; d < numberOfDecks; d++) {
+            for (Card.Suit suit : Card.Suit.legal()) {
+                for(Card.Values value : Card.Values.legal()) {
+                    cards.add(new Card(suit, value));
+                }
+            }
+        }
+    }
+
     private List<Card> getCards() {
         if (cards.isEmpty()) {
             for (Card.Suit suit : Card.Suit.legal()) {
