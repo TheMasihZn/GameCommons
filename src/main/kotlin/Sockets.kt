@@ -8,6 +8,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import serverCommons.Packet
 import serverCommons.PacketUtils
 import serverCommons.RequestSuitPacket
@@ -15,7 +17,9 @@ import java.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureSockets() {
-    val players = mutableListOf<Player>()
+    data class IO(val receiveChannel: ReceiveChannel<Frame>, val sendChannel: SendChannel<Frame>)
+
+    val players = mutableMapOf<Player, IO>()
     val games = mutableListOf<GameBase>()
     routing {
         webSocket("/") { // websocketSession
@@ -110,7 +114,7 @@ fun Application.configureSockets() {
                 }
             }
         }
-        webSocket("/game_url") { // websocketSession
+        webSocket("/join%game_id") { // websocketSession
             for (frame in incoming) {
                 if (frame is Frame.Text) {
                     val text = frame.readText()
