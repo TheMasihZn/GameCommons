@@ -33,6 +33,6 @@ public class Packet {
     public enum SystemCommand {
         Init,
         Quit,
-        Ping
+        Ping,
     }
 }
