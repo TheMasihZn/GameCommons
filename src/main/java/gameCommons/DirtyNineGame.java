@@ -73,9 +73,7 @@ public class DirtyNineGame extends GameBase {
                     p.getHand().clear();
                     nextPlayer.getHand().addAll(cardsToGive);
 
-                    for ( Card c : cardsToGive) {
-                        callback.onCardTransferred(p, nextPlayer, card, getGameFrame());
-                    }
+                    callback.onMoveHandByDirection(getGameFrame(),currentPlayer,to,card);
                 }
             }
             default -> {
