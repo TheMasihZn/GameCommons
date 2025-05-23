@@ -30,6 +30,13 @@ public class Packet {
         GameFrame
     }
 
+    public enum GameFuntions {
+        RequestSuit,
+//        Card,
+//        Message,
+//        GameFrame
+    }
+
     public enum SystemCommand {
         Init,
         Quit,

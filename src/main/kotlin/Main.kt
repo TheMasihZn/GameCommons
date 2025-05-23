@@ -17,10 +17,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 fun main() {
-    val gf : GameFrame? = null
-    val players = mutableSetOf<Player>()
-    val games = mutableListOf<Game>()
-    val lobbyHosts = mutableSetOf<Player>()
     embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
         install(ContentNegotiation) {
             gson {
