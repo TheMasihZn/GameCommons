@@ -110,7 +110,7 @@ fun Application.configureSockets() {
                 }
             }
         }
-        webSocket("/game_url") { // websocketSession
+        webSocket("/join%game_id") { // websocketSession
             for (frame in incoming) {
                 if (frame is Frame.Text) {
                     val text = frame.readText()
