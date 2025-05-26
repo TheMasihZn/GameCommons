@@ -1,0 +1,42 @@
+//package gameCommons;
+//
+//import java.util.EnumMap;
+//import java.util.Map;
+//
+//public class Packet {
+//    private SystemCommand command;
+//    private final Map<PacketKeys, Object> args = new EnumMap<>(PacketKeys.class);
+//
+//    public Packet() {
+//        this(SystemCommand.Ping);
+//    }
+//
+//    public Packet(SystemCommand command) {
+//        this.command = command;
+//    }
+//
+//    public Map<PacketKeys, Object> getArgs() {
+//        return args;
+//    }
+//
+//    public SystemCommand getCommand() {
+//        return command;
+//    }
+//
+//    public void setCommand(SystemCommand command) {
+//        this.command = command;
+//    }
+//
+//    public enum PacketKeys {
+//        Sender,
+//        Card,
+//        Message,
+//        GameFrame
+//    }
+//
+//    public enum SystemCommand {
+//        Init,
+//        Quit,
+//        Ping,
+//    }
+//}

@@ -1,9 +1,8 @@
 package dirty7server.masih.zn
 
-import gameCommons.Game
+
+import gameCommons.GameBase
 import gameCommons.GameFrame
-import gameCommons.Packet
-import gameCommons.PacketUtils
 import gameCommons.Player
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -19,7 +18,7 @@ import kotlin.time.toJavaDuration
 fun main() {
     val gf : GameFrame? = null
     val players = mutableSetOf<Player>()
-    val games = mutableListOf<Game>()
+    val games = mutableListOf<GameBase>()
     val lobbyHosts = mutableSetOf<Player>()
     embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
 
@@ -36,17 +35,19 @@ fun main() {
         }
         routing {
             webSocket ("/join") {
-                val packet = PacketUtils.deserialize(receiveDeserialized<Packet>())
-                players.add(packet.args[Packet.PacketKeys.Sender]!! as Player)
-                sendSerialized(lobbyHosts)
+//                val packet = PacketUtils.deserialize(receiveDeserialized<Packet>())
+//                players.add(packet.args[Packet.PacketKeys.Sender]!! as Player)
+//                sendSerialized(lobbyHosts)
             }
             webSocket ("/host") {
-                val packet = PacketUtils.deserialize(receiveDeserialized<Packet>())
-                val player = packet.args[Packet.PacketKeys.Sender]!! as Player
-                players.add(player)
+//                val packet = PacketUtils.deserialize(receiveDeserialized<Packet>())
+//                val player = packet.args[Packet.PacketKeys.Sender]!! as Player
+//                players.add(player)
             }
             get("/game") {
                 call.respondText("Hello World!")
+
+
             }
         }
     }.start(wait = true)
