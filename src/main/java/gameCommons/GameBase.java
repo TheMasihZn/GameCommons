@@ -1,12 +1,7 @@
 package gameCommons;
 
-import gameCommons.*;
-import kotlin.jvm.internal.Lambda;
-import serverCommons.Packet;
-
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -25,9 +20,9 @@ public abstract class GameBase extends GameFrame {
     }
 
     protected void initializeDeck() {
-        this.deck = new Deck(config.getDeckCount());
+        this.deck = new Deck(config.deckCount());
         for (Player player : players) {
-            List<Card> hand = deck.take(config.getCardsPerPlayer());
+            List<Card> hand = deck.take(config.cardsPerPlayer());
             player.setHand(hand);
         }
     }
