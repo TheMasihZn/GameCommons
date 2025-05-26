@@ -10,7 +10,7 @@ public class GameFrame implements Serializable {
     protected List<Player> players;
     protected long turnId;
     protected Direction direction;
-    private long timestamp;
+    private final long timestamp;
 
     public GameFrame(Card floor, List<Player> players, long turnId, Direction direction) {
         this(floor, players, turnId, direction, System.currentTimeMillis());

@@ -1,8 +1,14 @@
 package gameCommons;
 
 import gameCommons.*;
+import kotlin.jvm.internal.Lambda;
+import serverCommons.Packet;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public abstract class GameBase extends GameFrame {
     protected final GameConfig config;
@@ -47,6 +53,9 @@ public abstract class GameBase extends GameFrame {
         callback.onCardTransferred(from, to, card, getGameFrame());
     }
 
+
+    public abstract HashMap<Card, Consumer> rules();
+
     public Player getCurrentPlayer() {
         return players.stream()
                 .filter(p -> p.getId() == turnId)
@@ -78,7 +87,7 @@ public abstract class GameBase extends GameFrame {
     }
 
     protected long nextTurnId(long fromId, Direction dir) {
-        int i = players.stream().map(Player::getId).toList().indexOf(fromId);
+        int i = players.stream().map(Player::getId).collect(Collectors.toList()).indexOf(fromId);
         i = (dir == Direction.Clockwise) ? i + 1 : i - 1;
         if (i < 0) i = players.size() - 1;
         return players.get(i % players.size()).getId();
