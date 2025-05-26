@@ -20,9 +20,9 @@ public abstract class GameBase extends GameFrame {
     }
 
     protected void initializeDeck() {
-        this.deck = new Deck(config.deckCount());
+        this.deck = new Deck(config.getDeckCount());
         for (Player player : players) {
-            List<Card> hand = deck.take(config.cardsPerPlayer());
+            List<Card> hand = deck.take(config.getCardsPerPlayer());
             player.setHand(hand);
         }
     }
