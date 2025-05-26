@@ -48,9 +48,6 @@ public abstract class GameBase extends GameFrame {
         callback.onCardTransferred(from, to, card, getGameFrame());
     }
 
-
-    public abstract HashMap<Card, Consumer> rules();
-
     public Player getCurrentPlayer() {
         return players.stream()
                 .filter(p -> p.getId() == turnId)

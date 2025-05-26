@@ -1,5 +1,8 @@
 package gameCommons;
 
+import java.util.HashMap;
+import java.util.function.Consumer;
+
 public class DirtySevenGame extends GameBase {
 
     public DirtySevenGame(GameFrame frame, GameConfig config, GameCallback callback) {
@@ -32,6 +35,9 @@ public class DirtySevenGame extends GameBase {
         Direction newDirection = direction;
         long nextTurn = nextTurnId();
 
+//        HashMap<Card, Consumer<GameFrame>> not using because
+//        it requires static consumer which is inherently incompatible with the structure
+//        thus the runtime Dependency Injection will be impossible to integrate
         switch (card.getValue()) {
             case X -> {
                 newDirection = newDirection.reverse();
