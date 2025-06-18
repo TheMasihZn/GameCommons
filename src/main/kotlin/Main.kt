@@ -1,6 +1,8 @@
 package dirty7server.masih.zn
 
 
+import Lobby
+import LobbyListPacket
 import PlayerChannel
 import gameCommons.GameBase
 import gameCommons.GameConfig
@@ -18,19 +20,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 fun main() {
-
-    data class Lobby(
-        val id: Long,
-        val gameConfig: GameConfig,
-        val game: GameBase? = null,
-        val players: MutableList<Player> = mutableListOf()
-    )
-
-    data class LobbyListPacket(val lobbies: List<Lobby>) : Packet(Type.server) {
-        constructor(lobby: Lobby) : this(listOf(lobby))
-        constructor(lobbies: Set<Lobby>) : this(lobbies.toList())
-    }
-
 
     val lobbies = hashSetOf<Lobby>()
     val channels = mutableMapOf<Player, PlayerChannel>()
