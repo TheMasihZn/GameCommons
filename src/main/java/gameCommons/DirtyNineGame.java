@@ -38,29 +38,31 @@ public class DirtyNineGame extends GameBase {
         long nextTurn = nextTurnId();
 
         switch (card.getValue()) {
-            case X -> {
+            case X:
                 newDirection = newDirection.reverse();
                 callback.onReverseDirection(getGameFrame());
                 nextTurn = nextTurnId(turnId, newDirection);
-            }
-            case A -> {
+                break;
+            case A:
                 nextTurn = nextTurnId(nextTurn, newDirection);
                 skipNext = true;
-            }
-            case VII -> {
+                break;
+            case VII:
                 callback.onPenaltyChanged(getGameFrame());
                 pendingDrawCount += 4;
-            }
-            case J -> {
+                break;
+            case J:
                 callback.onRequestSuit(currentPlayer, getGameFrame());
                 nextTurn = nextTurnId(nextTurn, newDirection);
-            }
-            case II -> callback.onRequestGift(currentPlayer, to, card, getGameFrame());
-            case VIII -> {
+                break;
+            case II:
+                callback.onRequestGift(currentPlayer, to, card, getGameFrame());
+                break;
+            case VIII:
                 nextTurn = turnId;
                 callback.onNextTurn(currentPlayer, currentPlayer, getGameFrame());
-            }
-            case IX -> {
+                break;
+            case IX:
                 Map<Long, List<Card>> handCopies = new HashMap<>();
                 for (Player p : players) {
                     handCopies.put(p.getId(), new ArrayList<>(p.getHand()));
@@ -73,16 +75,17 @@ public class DirtyNineGame extends GameBase {
                     p.getHand().clear();
                     nextPlayer.getHand().addAll(cardsToGive);
 
-                    callback.onMoveHandByDirection(getGameFrame(),currentPlayer,to,card);
+                    callback.onMoveHandByDirection(getGameFrame(), currentPlayer, to, card);
                 }
-            }
-            default -> {
+                break;
+            default:
                 if (skipNext) {
                     nextTurn = nextTurnId(nextTurn, newDirection);
                 }
                 skipNext = false;
-            }
+                break;
         }
+
 
         floor = card;
         turnId = nextTurn;

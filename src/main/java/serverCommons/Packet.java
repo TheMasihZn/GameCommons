@@ -1,11 +1,17 @@
 package serverCommons;
 
+import gameCommons.Player;
+
 import java.io.Serializable;
 
 public class Packet implements Serializable {
     public Type packetType;
+    public Player sender = null;
 
     public Packet(Type packetType) {
+        this.packetType = packetType;
+    }
+    public Packet(Type packetType, Player sender) {
         this.packetType = packetType;
     }
 
@@ -22,7 +28,9 @@ public class Packet implements Serializable {
         ON_PENALTY_CHANGED,
         ON_REQUEST_GIFT,
         ON_REVERSE_DIRECTION,
-        ON_MOVE_HAND_BY_DIRECTION
+        ON_MOVE_HAND_BY_DIRECTION,
+
+        server
     }
 }
 
