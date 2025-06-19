@@ -2,17 +2,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import gameCommons.Card;
 import gameCommons.Player;
+import io.ktor.websocket.DefaultWebSocketSession;
 import serverCommons.Packet;
 
 import java.util.Map;
 
 public class PacketUtils {
-
-    public interface PacketCallback {
-        void onInit();
-        void onReceivePacket(Packet packet);
-        void onException(Exception e);
-    }
 
     public static Packet deserialize(Packet receivedPacket) {
         Gson gson = new Gson();

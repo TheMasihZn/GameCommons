@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Player {
-    private long id;
-    private String name;
-    private int icon;
+public class Player extends DataPack {
     private List<Card> hand;
     public long timeout;
 
@@ -20,35 +17,9 @@ public class Player {
     }
 
     public Player(long id, String name, int icon, List<Card> hand, long timeout) {
-        this.id = id;
-        this.name = name;
-        this.icon = icon;
+        super(id, name, icon);
         this.hand = hand;
         this.timeout = timeout;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getIcon() {
-        return icon;
-    }
-
-    public void setIcon(int icon) {
-        this.icon = icon;
     }
 
     public List<Card> getHand() {
@@ -65,12 +36,12 @@ public class Player {
 
     @Override
     public String toString() {
-        return name + " : " + hand.size();
+        return super.getName() + " : " + hand.size();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(super.getId());
     }
 
     @Override

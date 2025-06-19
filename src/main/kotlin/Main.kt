@@ -3,9 +3,7 @@ package dirty7server.masih.zn
 
 import Lobby
 import LobbyListPacket
-import PlayerChannel
-import gameCommons.GameBase
-import gameCommons.GameConfig
+import NetworkChannel
 import gameCommons.Player
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -22,7 +20,7 @@ import kotlin.time.toJavaDuration
 fun main() {
 
     val lobbies = hashSetOf<Lobby>()
-    val channels = mutableMapOf<Player, PlayerChannel>()
+    val channels = mutableMapOf<Player, NetworkChannel>()
 
     embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
 
@@ -40,7 +38,7 @@ fun main() {
         routing {
             webSocket("/lobby") {
                 val packet = receiveDeserialized<Packet>()
-                channels[packet.sender] = PlayerChannel(::sendSerialized)
+                channels[packet.sender] = NetworkChannel(::sendSerialized)
                 channels[packet.sender]?.send(LobbyListPacket(lobbies))
             }
             webSocket("/host") {
@@ -60,6 +58,7 @@ fun main() {
                     lobby.players.forEach { p ->
                         channels[p]?.send(LobbyListPacket(lobby))
                     }
+
                 }
             }
         }
