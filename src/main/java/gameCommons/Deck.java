@@ -1,12 +1,12 @@
 package gameCommons;
 
+import kotlin.random.Random;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Deck {
     private final List<Card> cards = new ArrayList<>();
-    private final Random random = new Random();
 
     public Deck(int numberOfDecks) {
         for (int d = 0; d < numberOfDecks; d++) {
@@ -30,9 +30,8 @@ public class Deck {
     }
 
     public Card take() {
-        List<Card> availableCards = getCards();
-        int index = random.nextInt(availableCards.size());
-        return availableCards.remove(index);
+        int index = Random.Default.nextInt(cards.size());
+        return cards.remove(index);
     }
 
     public List<Card> take(int n) {

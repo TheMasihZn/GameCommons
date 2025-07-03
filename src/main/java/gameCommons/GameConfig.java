@@ -1,6 +1,8 @@
 package gameCommons;
 
-public class GameConfig {
+import java.io.Serializable;
+
+public class GameConfig implements Serializable {
     private final int deckCount;
     private final int cardsPerPlayer;
     private final int mode;

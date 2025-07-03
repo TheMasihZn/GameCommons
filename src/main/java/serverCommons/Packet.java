@@ -13,6 +13,7 @@ public class Packet implements Serializable {
     }
     public Packet(Type packetType, Player sender) {
         this.packetType = packetType;
+        this.sender = sender;
     }
 
     public enum Type {
@@ -30,7 +31,8 @@ public class Packet implements Serializable {
         ON_REVERSE_DIRECTION,
         ON_MOVE_HAND_BY_DIRECTION,
 
-        server
+        server,
+        ACK
     }
 }
 

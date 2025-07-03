@@ -2,9 +2,10 @@ package gameCommons;
 
 import org.jetbrains.annotations.Contract;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class DataPack {
+public class DataPack implements Serializable {
     private long id;
     private String name;
     private int icon;
